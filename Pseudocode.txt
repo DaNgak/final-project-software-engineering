@@ -1,0 +1,74 @@
+BEGIN
+    READ AND WRITE list_buku AS LIST
+    READ AND WRITE buku_dipinjam AS LIST
+    READ AND WRITE buku_tersedia AS INTEGER
+    READ AND WRITE i AS INTEGER
+
+    SET list_buku = ["buku1", "buku2", "buku3", "buku4", "buku5"]
+    SET buku_dipinjam = ["", "", "", "", ""]
+    SET buku_tersedia = 5
+    SET i = 0
+
+    PRINT "Selamat Datang di Library App"
+
+    LOOP DO 
+        PRINT "MENU:"
+        PRINT "1. Lihat daftar buku"
+        PRINT "2. Pinjam buku"
+        PRINT "3. Lihat buku yang sedang dipinjam"
+        PRINT "4. Kembalikan buku"
+        PRINT "5. Keluar"
+        INPUT pilihan
+
+        IF pilihan == 1 THEN
+            PRINT "DAFTAR BUKU"
+            FOR i IN RANGE(0, LENGTH(list_buku)):
+                PRINT STRING(i+1) + " - " + list_buku[i]
+            ENDFOR
+
+        ELSE IF pilihan == 2 THEN
+            IF buku_tersedia == 0 THEN
+                PRINT "Maaf, stok buku habis."
+            ELSE
+                PRINT "PINJAM BUKU"
+                INPUT nomor_buku
+                IF nomor_buku < 1 OR nomor_buku > LENGTH(list_buku) THEN
+                    PRINT "Nomor buku tidak valid"
+                ELSE IF buku_dipinjam[nomor_buku-1] != "" THEN
+                    PRINT "Buku sudah dipinjam"
+                ELSE
+                    SET buku_dipinjam[nomor_buku-1] = list_buku[nomor_buku-1]
+                    SET buku_tersedia -= 1
+                    PRINT "Berhasil meminjam buku " + list_buku[nomor_buku-1]
+                ENDIF
+            ENDIF
+
+        ELSE IF pilihan == 3 THEN
+            PRINT "BUKU YANG SEDANG DIPINJAM"
+            FOR i IN RANGE(0, LENGTH(buku_dipinjam)):
+                IF buku_dipinjam[i] != "":
+                    PRINT STRING(i+1) + " - " + buku_dipinjam[i]
+                ENDIF
+            ENDFOR
+            
+        ELSE IF pilihan == 4 THEN
+            PRINT "KEMBALIKAN BUKU"
+            INPUT nomor_buku
+            IF nomor_buku < 1 OR nomor_buku > LENGTH(list_buku) THEN
+                PRINT "Nomor buku tidak valid"
+            ELSE IF buku_dipinjam[nomor_buku-1] == "" THEN
+                PRINT "Buku tidak sedang dipinjam"
+            ELSE
+                SET buku_dipinjam[nomor_buku-1] = ""
+                SET buku_tersedia += 1
+                PRINT "Berhasil mengembalikan buku " + list_buku[nomor_buku-1]
+            ENDIF
+        
+        ELSE IF pilihan == 5 THEN
+            BREAK
+
+        ELSE
+            PRINT "Pilihan tidak valid"
+        ENDIF
+    END LOOP WHILE pilihan >=1 AND pilihan <= 5
+END
